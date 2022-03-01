@@ -20,8 +20,8 @@
 			question: 'JavaScript or Java',
 			answerA: 'JavaScript',
 			answerB: 'Java',
-			votesA: 9,
-			votesB: 15
+			votesA: 5,
+			votesB: 7,
 		},
 	]
 
@@ -32,15 +32,32 @@
 		activeItem = 'Current-Polls';
 	}
 
+	// Handle Vote
+	const handleVote = (e) => {
+		const {id, option} = e.detail;
+
+		const copiedPoll = [...polls];
+		let updatePoll = copiedPoll.find((poll) => poll.id == id);
+
+		if (option === 'a') {
+			updatePoll.votesA++;
+		}
+		if (option === 'b') {
+			updatePoll.votesB++;
+		}
+
+		polls = copiedPoll;
+	}
+
 </script>
 
 <Header />
 	<main>
 		<Tabs {items} {activeItem} on:tabChange={handleTabs} />
 		{#if activeItem === 'Current Polls'}
-			<PollsList {polls} />
+			<PollsList {polls} on:vote={ handleVote } />
 		{:else if activeItem === 'Add New Poll'}
-			<CreatePollForm on:add={handleAdd}/>
+			<CreatePollForm on:add={handleAdd} />
 		{/if}
 	</main>
 <Footer />
