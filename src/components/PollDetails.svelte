@@ -1,8 +1,7 @@
 <script>
-    import { createEventDispatcher } from "svelte";
     import Card from "../shared/Card.svelte";
+    import PollStore from '../stores/PollStore';
 
-    const dispatch = createEventDispatcher();
     export let poll;
     $: totalVotes = poll.votesA + poll.votesB;
     $: percentA = Math.floor(100 / totalVotes * poll.votesA);
@@ -10,7 +9,19 @@
 
     // Handle Votes
     const handleVote = (option, id) => {
-        dispatch('vote', {option, id} );
+        PollStore.update(currentPolls => {
+            let copiedPoll = [...currentPolls];
+            let updatePoll = copiedPoll.find((poll) => poll.id == id);
+
+            if (option === 'a') {
+                updatePoll.votesA++;
+            }
+            if (option === 'b') {
+                updatePoll.votesB++;
+            }
+
+            return copiedPoll;
+        })
     }
 </script>
 
@@ -41,14 +52,14 @@
         margin-bottom: 30px;
     }
     .answer {
-        background: rgb(187, 187, 187);
+        background: rgb(169, 155, 169);
         cursor: pointer;
         margin: 10px auto;
         position: relative;
         transition: all cubic-bezier(0.86, 0, 0.07, 1);
     }
     .answer:hover {
-        background: none;
+        background: purple;
         color:white;
     }
     span {
@@ -61,11 +72,13 @@
         box-sizing: border-box;
     }
     .percent-a {
-        background: brown;
+        background: rgb(223, 128, 34);
+        opacity: 50%;
         border-left: 4px solid rgb(72, 21, 21);
     }
     .percent-b {
-        background: rgb(70, 70, 70);
+        background: red;
+        opacity: 50%;
         border-left: 4px solid rgb(28, 28, 28);
     }
 </style>
